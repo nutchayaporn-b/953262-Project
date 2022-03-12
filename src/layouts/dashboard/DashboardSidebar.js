@@ -52,7 +52,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const isDesktop = useResponsive('up', 'lg');
 
   const sidebarConfig =
-    user?.role === 'customer'
+    user.role === 'customer' || user.role === 'guest'
       ? [
           {
             title: 'dashboard',
@@ -77,13 +77,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             icon: getIcon('eva:pie-chart-2-fill'),
           },
           {
-            title: 'Order',
-            path: '/customer/order',
+            title: 'Order Management',
+            path: '/kitchen/order',
             icon: getIcon('ep:dish'),
           },
           {
-            title: 'Checkout',
-            path: '/customer/checkout',
+            title: 'Payment Management',
+            path: '/kitchen/payment',
             icon: getIcon('eva:file-text-fill'),
           },
         ];

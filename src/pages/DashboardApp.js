@@ -2,76 +2,31 @@
 import { Box, Grid, Container, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
-import {
-  AppTasks,
-  AppNewUsers,
-  AppBugReports,
-  AppItemOrders,
-  AppNewsUpdate,
-  AppWeeklySales,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppCurrentSubject,
-  AppConversionRates
-} from '../sections/@dashboard/app';
+
+import OrderProductCard from '../sections/@dashboard/products/OrderProductCard';
+import PRODUCTS from '../_mocks_/products';
 
 // ----------------------------------------------------------------------
+function ProductList({ products, ...other }) {
+  return (
+    <Grid container spacing={3} {...other}>
+      {products.map(product => (
+        <Grid key={product.id} item xs={12} sm={6} md={3}>
+          <OrderProductCard product={product} />
+        </Grid>
+      ))}
+    </Grid>
+  );
+}
 
 export default function DashboardApp() {
   return (
     <Page title="Dashboard | ">
       <Container maxWidth="xl">
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h4">Hi, Welcome back</Typography>
+        <Box sx={{ pb: 5 }} className="text-[#1a910a]">
+          <Typography variant="h4">Your orders will appear here</Typography>
         </Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWeeklySales />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppNewUsers />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppItemOrders />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppBugReports />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTrafficBySite />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppTasks />
-          </Grid>
-        </Grid>
+        <ProductList products={PRODUCTS} />
       </Container>
     </Page>
   );

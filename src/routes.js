@@ -15,35 +15,27 @@ import { useAuth } from './context/AuthContext';
 // ----------------------------------------------------------------------
 
 export default function Router() {
-    return useRoutes([
-        {
-            path: '/',
-            element: <DashboardLayout />,
-            children: [
-                { path: 'dashboard', element: <DashboardApp /> },
-                { path: 'customer', element: <Products /> },
-                { path: 'kitchen', element: <Blog /> },
-                { path: 'login', element: <Login /> },
-                { path: 'register', element: <Register /> },
-            ],
-        },
-        {
-            path: '/customer',
-            element: <DashboardLayout />,
-            children: [
-                { path: 'order', element: <Products /> },
-                { path: 'checkout', element: <Blog /> },
-            ],
-        },
-        {
-            path: '/',
-            element: <LogoOnlyLayout />,
-            children: [
-                { path: '/', element: <Navigate to="/dashboard" /> },
-                { path: '404', element: <NotFound /> },
-                { path: '*', element: <Navigate to="/404" /> },
-            ],
-        },
-        { path: '*', element: <Navigate to="/404" replace /> },
-    ]);
+  return useRoutes([
+    {
+      path: '/customer',
+      element: <DashboardLayout />,
+      children: [
+        { path: 'order', element: <Products /> },
+        { path: 'checkout', element: <Blog /> },
+      ],
+    },
+    {
+      path: '/',
+      element: <LogoOnlyLayout />,
+      children: [
+        { path: '/', element: <Navigate to="/dashboard" /> },
+        { path: 'dashboard', element: <DashboardLayout />, children: [{ path: '', element: <DashboardApp /> }] },
+        { path: 'login', element: <Login /> },
+        { path: 'register', element: <Register /> },
+        { path: '404', element: <NotFound /> },
+        { path: '*', element: <Navigate to="/404" /> },
+      ],
+    },
+    { path: '*', element: <Navigate to="/404" replace /> },
+  ]);
 }
