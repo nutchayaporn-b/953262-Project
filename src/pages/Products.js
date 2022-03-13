@@ -56,6 +56,14 @@ export default function EcommerceShop() {
 
   const [products, setProducts] = useState(null);
 
+  const SORT_BY_OPTIONS = [
+    { value: 'priceDesc', label: 'Price: High-Low' },
+    { value: 'priceAsc', label: 'Price: Low-High' },
+  ];
+  const [sortBy, setSortBy] = useState(SORT_BY_OPTIONS[0]);
+
+  console.log(formik.values, sortBy);
+
   return (
     <Page title="Dashboard: Products | ">
       <Container>
@@ -76,7 +84,7 @@ export default function EcommerceShop() {
                 onOpenFilter={handleOpenFilter}
                 onCloseFilter={handleCloseFilter}
               />
-              <ProductSort />
+              <ProductSort sortBy={sortBy} setSortBy={setSortBy} options={SORT_BY_OPTIONS} />
             </Stack>
           </Stack>
 
