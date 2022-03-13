@@ -45,8 +45,8 @@ DashboardSidebar.propTypes = {
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
-  const { user, login } = useAuth();
-
+  const { user } = useAuth();
+  // console.log(user);
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
@@ -110,7 +110,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
-            <Box sx={{ ml: 2 }} onClick={() => login()}>
+            <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                 {user?.name || 'Guest'}
               </Typography>

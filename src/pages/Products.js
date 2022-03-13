@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 // material
 import { Container, Stack, Typography } from '@mui/material';
 // components
@@ -10,6 +10,7 @@ import PRODUCTS from '../_mocks_/products';
 
 import { ProductContext } from '../context/ProductContext';
 import Searchbar from '../layouts/dashboard/Searchbar';
+import axiosHelper from '../utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +48,14 @@ export default function EcommerceShop() {
   const [cart, setCart] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')).length : 0);
   const providerValue = useMemo(() => ({ cart, setCart }), [cart, setCart]);
 
+  useEffect(() => {
+    axiosHelper('get', '/customer/order/menu').then(res => {
+      setProducts(res.data.data);
+    });
+  }, []);
+
+  const [products, setProducts] = useState(null);
+
   return (
     <Page title="Dashboard: Products | ">
       <Container>
@@ -71,7 +80,7 @@ export default function EcommerceShop() {
             </Stack>
           </Stack>
 
-          <ProductList products={PRODUCTS} />
+          {products && <ProductList products={products} />}
         </ProductContext.Provider>
       </Container>
     </Page>
