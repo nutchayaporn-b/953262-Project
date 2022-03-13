@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id     Int     @id @default(autoincrement())
+  name   String? @db.VarChar(255)
+  active Int?    @default(1) @db.TinyInt
+  food   food[]
+}
+
+model food {
+  id          Int          @id @default(autoincrement())
+  name        String?      @db.VarChar(255)
+  description String?      @db.VarChar(1000)
+  price       Float?
+  category_id Int?
+  active      Int?         @default(1) @db.TinyInt
+  image       String?      @db.VarChar(255)
+  category    category?    @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_food_category")
+  order_item  order_item[]
+
+  @@index([category_id], map: "fk_food_category_idx")
+}
+
+model invoice {
+  id                Int             @id @default(autoincrement())
+  total             Float?
+  order_id          Int?
+  invoice_status_id Int?
+  invoice_status    invoice_status? @relation(fields: [invoice_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_invoice_status1")
+  order             order?          @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_order1")
+
+  @@index([invoice_status_id], map: "fk_invoice_invoice_status1_idx")
+  @@index([order_id], map: "fk_invoice_order1_idx")
+}
+
+model invoice_status {
+  id      Int       @id
+  status  String?   @db.VarChar(45)
+  invoice invoice[]
+}
+
+model order {
+  id         Int          @id @default(autoincrement())
+  user_id    Int?
+  created_at DateTime?    @db.DateTime(0)
+  updated_at DateTime?    @db.DateTime(0)
+  user       user?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_user1")
+  invoice    invoice[]
+  order_item order_item[]
+
+  @@index([user_id], map: "fk_order_user1_idx")
+}
+
+model order_item {
+  id              Int           @id @default(autoincrement())
+  amount          Int?
+  order_id        Int?
+  food_id         Int?
+  order_status_id Int?
+  food            food?         @relation(fields: [food_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_food1")
+  order           order?        @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_order1")
+  order_status    order_status? @relation(fields: [order_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_order_status1")
+
+  @@index([food_id], map: "fk_order_item_food1_idx")
+  @@index([order_id], map: "fk_order_item_order1_idx")
+  @@index([order_status_id], map: "fk_order_item_order_status1_idx")
+}
+
+model order_status {
+  id         Int          @id @default(autoincrement())
+  status     String?      @db.VarChar(45)
+  order_item order_item[]
+}
+
+model user {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(255)
+  role     String? @default("customer") @db.VarChar(45)
+  email    String? @db.VarChar(255)
+  password String? @db.VarChar(255)
+  order    order[]
+}
