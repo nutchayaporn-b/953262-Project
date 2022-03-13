@@ -35,13 +35,13 @@ ShopProductCard.propTypes = {
 function categoryStyle(name) {
   switch (name) {
     case 'Appetizers':
-      return 'text-white bg-[#FFC107]';
+      return 'text-white bg-green-600';
     case 'Beverages':
-      return 'text-white bg-[#FF5722]';
+      return 'text-white bg-blue-600';
     case 'Desserts':
       return 'text-white bg-[#FF9800]';
     case 'Main Course':
-      return 'text-white bg-[#FFEB3B]';
+      return 'text-white bg-red-600';
     default:
       return 'text-white bg-[#4CAF50]';
   }
