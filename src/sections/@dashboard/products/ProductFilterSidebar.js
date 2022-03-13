@@ -32,9 +32,9 @@ export const FILTER_GENDER_OPTIONS = ['Men', 'Women', 'Kids'];
 export const FILTER_CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
 export const FILTER_RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
 export const FILTER_PRICE_OPTIONS = [
-  { value: 'below10', label: 'Below $10' },
-  { value: 'between10-20', label: 'Between $10 - $20' },
-  { value: 'above20', label: 'Above $20' },
+  { value: '-5', label: 'Below $5' },
+  { value: '5,14', label: 'From $5-14' },
+  { value: '+14', label: 'Above $14' },
 ];
 export const FILTER_COLOR_OPTIONS = [
   '#00AB55',
@@ -112,13 +112,17 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
                     Category
                   </Typography>
                   <FormGroup>
-                    {categories.map(item => (
+                    {categories?.map(item => (
                       <FormControlLabel
-                        key={item}
+                        key={item.name}
                         control={
-                          <Checkbox {...getFieldProps('gender')} value={item} checked={values.gender.includes(item)} />
+                          <Checkbox
+                            {...getFieldProps('category')}
+                            value={item.name}
+                            checked={values.category.includes(item.name)}
+                          />
                         }
-                        label={item}
+                        label={item.name}
                       />
                     ))}
                   </FormGroup>
@@ -135,7 +139,7 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
                   </RadioGroup>
                 </div>
 
-                <div>
+                {/* <div>
                   <Typography variant="subtitle1" gutterBottom>
                     Rating
                   </Typography>
@@ -152,7 +156,7 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
                             checkedIcon={<Rating readOnly value={4 - index} />}
                           />
                         }
-                        label="& Up"
+                        label=""
                         sx={{
                           my: 0.5,
                           borderRadius: 1,
@@ -168,7 +172,7 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
                       />
                     ))}
                   </RadioGroup>
-                </div>
+                </div> */}
               </Stack>
             </Scrollbar>
 

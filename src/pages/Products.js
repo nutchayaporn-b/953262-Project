@@ -5,8 +5,6 @@ import { Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
-//
-import PRODUCTS from '../_mocks_/products';
 
 import { ProductContext } from '../context/ProductContext';
 import Searchbar from '../layouts/dashboard/Searchbar';
@@ -19,9 +17,7 @@ export default function EcommerceShop() {
 
   const formik = useFormik({
     initialValues: {
-      gender: '',
       category: '',
-      colors: '',
       priceRange: '',
       rating: '',
     },
@@ -53,16 +49,66 @@ export default function EcommerceShop() {
       setProducts(res.data.data);
     });
   }, []);
-
   const [products, setProducts] = useState(null);
+  const [filter, setFilter] = useState(products);
+  const [search, setSearch] = useState('');
 
-  const SORT_BY_OPTIONS = [
-    { value: 'priceDesc', label: 'Price: High-Low' },
-    { value: 'priceAsc', label: 'Price: Low-High' },
-  ];
-  const [sortBy, setSortBy] = useState(SORT_BY_OPTIONS[0]);
+  useEffect(() => {
+    setFilter(products);
+  }, [products]);
 
-  console.log(formik.values, sortBy);
+  useEffect(() => {
+    const { category, priceRange, rating } = formik.values;
+    if (!category && !priceRange && !search) return setFilter(products);
+    let filterProducts = [];
+
+    if (priceRange) {
+      if (priceRange.includes('-')) {
+        filterProducts = products.filter(product => product.price < parseFloat(priceRange.replace('-', '')));
+      } else if (priceRange.includes('+')) {
+        filterProducts = products.filter(product => product.price > parseFloat(priceRange.replace('+', '')));
+      } else {
+        filterProducts = products.filter(
+          product =>
+            product.price >= parseFloat(priceRange.split(',')[0]) &&
+            product.price <= parseFloat(priceRange.split(',')[1]),
+        );
+      }
+    }
+
+    if (category !== '' && category !== []) {
+      if (priceRange) {
+        if (category.length > 1) {
+          const temp = [];
+          category.forEach(cat => {
+            temp.push(filterProducts.filter(product => product.category.name === cat));
+          });
+          filterProducts = temp.flat();
+        } else {
+          category.forEach(category => {
+            filterProducts = filterProducts.filter(product => product.category.name === category);
+          });
+        }
+      } else {
+        category.forEach(category => {
+          const temp = products.filter(product => product.category.name === category);
+          filterProducts = [...filterProducts, ...temp];
+        });
+      }
+    }
+
+    if (search !== '') {
+      if (priceRange || category || category.length !== 0) {
+        filterProducts = filterProducts.filter(product => product.name.toLowerCase().includes(search.toLowerCase()));
+      } else filterProducts = products.filter(product => product.name.toLowerCase().includes(search.toLowerCase()));
+    }
+
+    let result = [];
+    filterProducts.forEach(product => {
+      result = result.concat(product);
+    });
+    setFilter(result);
+  }, [formik.values, search]);
 
   return (
     <Page title="Dashboard: Products | ">
@@ -71,7 +117,7 @@ export default function EcommerceShop() {
           <Typography variant="h4" sx={{ mb: 5 }}>
             <div className="">
               <div>Menu</div>
-              <Searchbar />
+              <Searchbar search={search} setSearch={setSearch} />
             </div>
           </Typography>
 
@@ -84,11 +130,10 @@ export default function EcommerceShop() {
                 onOpenFilter={handleOpenFilter}
                 onCloseFilter={handleCloseFilter}
               />
-              <ProductSort sortBy={sortBy} setSortBy={setSortBy} options={SORT_BY_OPTIONS} />
             </Stack>
           </Stack>
 
-          {products && <ProductList products={products} />}
+          {products && <ProductList products={filter || products} />}
         </ProductContext.Provider>
       </Container>
     </Page>

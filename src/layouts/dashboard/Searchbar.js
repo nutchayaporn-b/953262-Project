@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Searchbar() {
+export default function Searchbar({ search, setSearch }) {
   return (
     <div className="flex flex-row justify-center w-full">
       <div className="input-group relative flex flex-row flex-wrap items-stretch w-full mb-4">
@@ -9,6 +9,8 @@ export default function Searchbar() {
           className="form-control relative flex-auto min-w-0 block w-[60%] px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
           placeholder="Search"
           aria-label="Search"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
           aria-describedby="button-addon2"
         />
         <button
