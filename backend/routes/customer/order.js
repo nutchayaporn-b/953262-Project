@@ -16,4 +16,12 @@ router.get('/menu', async (req, res) => {
   });
 });
 
+router.get('/category', async (req, res) => {
+  const categories = await prisma.category.findMany();
+  return res.status(200).json({
+    success: true,
+    data: categories,
+  });
+});
+
 module.exports = router;
