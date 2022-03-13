@@ -13,8 +13,8 @@ import AuthSocial from '../sections/authentication/AuthSocial';
 
 const RootStyle = styled(Page)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 }));
 
 const SectionStyle = styled(Card)(({ theme }) => ({
@@ -23,7 +23,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  margin: theme.spacing(2, 0, 2, 2)
+  margin: theme.spacing(2, 0, 2, 2),
 }));
 
 const ContentStyle = styled('div')(({ theme }) => ({
@@ -33,7 +33,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
-  padding: theme.spacing(12, 0)
+  padding: theme.spacing(12, 0),
 }));
 
 // ----------------------------------------------------------------------
@@ -43,7 +43,7 @@ export default function Register() {
     <RootStyle title="Register | ">
       <AuthLayout>
         Already have an account? &nbsp;
-        <Link underline="none" variant="subtitle2" component={RouterLink} to="/login">
+        <Link underline="none" variant="subtitle2" component={RouterLink} to="/auth/login">
           Login
         </Link>
       </AuthLayout>
@@ -61,12 +61,10 @@ export default function Register() {
             <Typography variant="h4" gutterBottom>
               Get started absolutely free.
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>
-              Free forever. No credit card needed.
-            </Typography>
+            <Typography sx={{ color: 'text.secondary' }}></Typography>
           </Box>
 
-          <AuthSocial />
+          {/* <AuthSocial /> */}
 
           <RegisterForm />
 
@@ -87,11 +85,11 @@ export default function Register() {
             sx={{
               mt: 3,
               textAlign: 'center',
-              display: { sm: 'none' }
+              display: { sm: 'none' },
             }}
           >
             Already have an account?&nbsp;
-            <Link underline="hover" to="/login" component={RouterLink}>
+            <Link underline="hover" to="/auth/login" component={RouterLink}>
               Login
             </Link>
           </Typography>

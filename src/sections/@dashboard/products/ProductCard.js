@@ -32,17 +32,33 @@ ShopProductCard.propTypes = {
   product: PropTypes.object,
 };
 
+function categoryStyle(name) {
+  switch (name) {
+    case 'Appetizers':
+      return 'text-white bg-[#FFC107]';
+    case 'Beverages':
+      return 'text-white bg-[#FF5722]';
+    case 'Desserts':
+      return 'text-white bg-[#FF9800]';
+    case 'Main Course':
+      return 'text-white bg-[#FFEB3B]';
+    default:
+      return 'text-white bg-[#4CAF50]';
+  }
+}
+
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  // console.log(product);
+  const { name, price, category, active, image } = product;
   const [open, setOpen] = useState(false);
   return (
     <Card onClick={() => setOpen(true)}>
       {PopUp({ open, setOpen, product })}
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
+        {category && (
           <Label
             variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
+            className={`${categoryStyle(category.name)} text-center`}
             sx={{
               zIndex: 9,
               top: 16,
@@ -51,10 +67,10 @@ export default function ShopProductCard({ product }) {
               textTransform: 'uppercase',
             }}
           >
-            {status}
+            {category.name}
           </Label>
         )}
-        <ProductImgStyle alt={name} src={cover} />
+        <ProductImgStyle alt={name} src={image} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -65,9 +81,9 @@ export default function ShopProductCard({ product }) {
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          <ColorPreview colors={['#AFEAFE', '#FFAAAA', '#ffe66b']} />
           <Typography variant="subtitle1">
-            <Typography
+            {/* <Typography
               component="span"
               variant="body1"
               sx={{
@@ -76,7 +92,7 @@ export default function ShopProductCard({ product }) {
               }}
             >
               {priceSale && fCurrency(priceSale)}
-            </Typography>
+            </Typography> */}
             &nbsp;
             {fCurrency(price)}
           </Typography>
@@ -139,12 +155,8 @@ function PopUp({ open, setOpen, product }) {
                       {product.name}
                     </Dialog.Title>
                     <div className="mt-2">
-                      <img src={`/static/mock-images/products/product_1.jpg`} alt="" />
-                      <p className="text-sm text-gray-500 mt-2">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cumque molestiae dolore fugiat
-                        cupiditate. Quam exercitationem iste ipsa vitae pariatur itaque nesciunt soluta quis animi
-                        distinctio, suscipit, deserunt, iure harum fugiat!
-                      </p>
+                      <img src={product.image} alt="" />
+                      <p className="text-sm text-gray-500 mt-2">{product.description}</p>
                     </div>
                   </div>
                 </div>
@@ -155,7 +167,7 @@ function PopUp({ open, setOpen, product }) {
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:green-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => addToCart(product)}
                 >
-                  Add to list
+                  Add to order
                 </button>
                 <button
                   type="button"

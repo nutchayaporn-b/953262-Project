@@ -30,8 +30,8 @@ export default function Router() {
       children: [
         { path: '/', element: <Navigate to="/dashboard" /> },
         { path: 'dashboard', element: <DashboardLayout />, children: [{ path: '', element: <DashboardApp /> }] },
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: 'auth/login', element: <Login /> },
+        { path: 'auth/register', element: <Register /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
