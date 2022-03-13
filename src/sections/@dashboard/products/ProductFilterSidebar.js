@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState, useContext } from 'react';
+import { Fragment, useRef, useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationIcon } from '@heroicons/react/outline';
@@ -26,22 +26,15 @@ import Scrollbar from '../../../components/Scrollbar';
 import ColorManyPicker from '../../../components/ColorManyPicker';
 import { ProductContext } from '../../../context/ProductContext';
 import Searchbar from '../../../layouts/dashboard/Searchbar';
+import axiosHelper from '../../../utils/axios';
 
-// ----------------------------------------------------------------------
-
-export const SORT_BY_OPTIONS = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'priceDesc', label: 'Price: High-Low' },
-  { value: 'priceAsc', label: 'Price: Low-High' },
-];
 export const FILTER_GENDER_OPTIONS = ['Men', 'Women', 'Kids'];
 export const FILTER_CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
 export const FILTER_RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
 export const FILTER_PRICE_OPTIONS = [
-  { value: 'below', label: 'Below $25' },
-  { value: 'between', label: 'Between $25 - $75' },
-  { value: 'above', label: 'Above $75' },
+  { value: 'below10', label: 'Below $10' },
+  { value: 'between10-20', label: 'Between $10 - $20' },
+  { value: 'above20', label: 'Above $20' },
 ];
 export const FILTER_COLOR_OPTIONS = [
   '#00AB55',
@@ -54,8 +47,6 @@ export const FILTER_COLOR_OPTIONS = [
   '#FFC107',
 ];
 
-// ----------------------------------------------------------------------
-
 ShopFilterSidebar.propTypes = {
   isOpenFilter: PropTypes.bool,
   onResetFilter: PropTypes.func,
@@ -65,6 +56,14 @@ ShopFilterSidebar.propTypes = {
 };
 
 export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenFilter, onCloseFilter, formik }) {
+  useEffect(() => {
+    axiosHelper('get', '/customer/order/category').then(res => {
+      setCategories(res.data.data);
+    });
+  });
+
+  const [categories, setCategories] = useState(null);
+
   const { values, getFieldProps, handleChange } = formik;
   const { cart } = useContext(ProductContext);
   const navigate = useNavigate();
@@ -110,10 +109,10 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
               <Stack spacing={3} sx={{ p: 3 }}>
                 <div>
                   <Typography variant="subtitle1" gutterBottom>
-                    Gender
+                    Category
                   </Typography>
                   <FormGroup>
-                    {FILTER_GENDER_OPTIONS.map(item => (
+                    {categories.map(item => (
                       <FormControlLabel
                         key={item}
                         control={
@@ -123,30 +122,6 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
                       />
                     ))}
                   </FormGroup>
-                </div>
-
-                <div>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Category
-                  </Typography>
-                  <RadioGroup {...getFieldProps('category')}>
-                    {FILTER_CATEGORY_OPTIONS.map(item => (
-                      <FormControlLabel key={item} value={item} control={<Radio />} label={item} />
-                    ))}
-                  </RadioGroup>
-                </div>
-
-                <div>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Colors
-                  </Typography>
-                  <ColorManyPicker
-                    name="colors"
-                    colors={FILTER_COLOR_OPTIONS}
-                    onChange={handleChange}
-                    onChecked={color => values.colors.includes(color)}
-                    sx={{ maxWidth: 38 * 4 }}
-                  />
                 </div>
 
                 <div>
