@@ -19,7 +19,7 @@ import {
   ListItemText,
   ListSubheader,
   ListItemAvatar,
-  ListItemButton
+  ListItemButton,
 } from '@mui/material';
 // utils
 import { mockImgAvatar } from '../../utils/mockImages';
@@ -33,49 +33,22 @@ import MenuPopover from '../../components/MenuPopover';
 const NOTIFICATIONS = [
   {
     id: faker.datatype.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
+    title: 'Futer plan',
+    description: 'might implement this function in future',
     avatar: null,
     type: 'order_placed',
     createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    isUnRead: true
+    isUnRead: true,
   },
   {
     id: faker.datatype.uuid(),
-    title: faker.name.findName(),
-    description: 'answered to your comment on the Minimal',
-    avatar: mockImgAvatar(2),
-    type: 'friend_interactive',
-    createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-    isUnRead: true
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new message',
-    description: '5 unread messages',
+    title: 'Futer plan',
+    description: 'might implement this function in future',
     avatar: null,
-    type: 'chat_message',
-    createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    isUnRead: false
+    type: 'order_placed',
+    createdAt: set(new Date(), { hours: 10, minutes: 30 }),
+    isUnRead: false,
   },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new mail',
-    description: 'sent from Guido Padberg',
-    avatar: null,
-    type: 'mail',
-    createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    isUnRead: false
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
-    avatar: null,
-    type: 'order_shipped',
-    createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    isUnRead: false
-  }
 ];
 
 function renderContent(notification) {
@@ -91,35 +64,35 @@ function renderContent(notification) {
   if (notification.type === 'order_placed') {
     return {
       avatar: <img alt={notification.title} src="/static/icons/ic_notification_package.svg" />,
-      title
+      title,
     };
   }
   if (notification.type === 'order_shipped') {
     return {
       avatar: <img alt={notification.title} src="/static/icons/ic_notification_shipping.svg" />,
-      title
+      title,
     };
   }
   if (notification.type === 'mail') {
     return {
       avatar: <img alt={notification.title} src="/static/icons/ic_notification_mail.svg" />,
-      title
+      title,
     };
   }
   if (notification.type === 'chat_message') {
     return {
       avatar: <img alt={notification.title} src="/static/icons/ic_notification_chat.svg" />,
-      title
+      title,
     };
   }
   return {
     avatar: <img alt={notification.title} src={notification.avatar} />,
-    title
+    title,
   };
 }
 
 NotificationItem.propTypes = {
-  notification: PropTypes.object.isRequired
+  notification: PropTypes.object.isRequired,
 };
 
 function NotificationItem({ notification }) {
@@ -135,8 +108,8 @@ function NotificationItem({ notification }) {
         px: 2.5,
         mt: '1px',
         ...(notification.isUnRead && {
-          bgcolor: 'action.selected'
-        })
+          bgcolor: 'action.selected',
+        }),
       }}
     >
       <ListItemAvatar>
@@ -151,7 +124,7 @@ function NotificationItem({ notification }) {
               mt: 0.5,
               display: 'flex',
               alignItems: 'center',
-              color: 'text.disabled'
+              color: 'text.disabled',
             }}
           >
             <Iconify icon="eva:clock-fill" sx={{ mr: 0.5, width: 16, height: 16 }} />
@@ -167,7 +140,7 @@ export default function NotificationsPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const totalUnRead = notifications.filter(item => item.isUnRead === true).length;
 
   const handleOpen = () => {
     setOpen(true);
@@ -179,10 +152,10 @@ export default function NotificationsPopover() {
 
   const handleMarkAllAsRead = () => {
     setNotifications(
-      notifications.map((notification) => ({
+      notifications.map(notification => ({
         ...notification,
-        isUnRead: false
-      }))
+        isUnRead: false,
+      })),
     );
   };
 
@@ -195,8 +168,8 @@ export default function NotificationsPopover() {
         onClick={handleOpen}
         sx={{
           ...(open && {
-            bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.focusOpacity)
-          })
+            bgcolor: theme => alpha(theme.palette.primary.main, theme.palette.action.focusOpacity),
+          }),
         }}
       >
         <Badge badgeContent={totalUnRead} color="error">
@@ -204,12 +177,7 @@ export default function NotificationsPopover() {
         </Badge>
       </IconButton>
 
-      <MenuPopover
-        open={open}
-        onClose={handleClose}
-        anchorEl={anchorRef.current}
-        sx={{ width: 360 }}
-      >
+      <MenuPopover open={open} onClose={handleClose} anchorEl={anchorRef.current} sx={{ width: 360 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">Notifications</Typography>
@@ -238,7 +206,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(0, 2).map((notification) => (
+            {notifications.slice(0, 2).map(notification => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
@@ -251,7 +219,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(2, 5).map((notification) => (
+            {notifications.slice(2, 5).map(notification => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>

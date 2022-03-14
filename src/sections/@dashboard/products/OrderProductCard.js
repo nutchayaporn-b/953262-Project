@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -12,8 +12,10 @@ import ColorPreview from '../../../components/ColorPreview';
 import Iconify from '../../../components/Iconify';
 import { ProductContext } from '../../../context/ProductContext';
 import axiosHelper from '../../../utils/axios';
+import toast from 'react-hot-toast';
 
 export default function ShopProductCard() {
+  const navigate = useNavigate();
   const { cart, setCart } = useContext(ProductContext);
   useEffect(() => {
     const products = JSON.parse(localStorage.getItem('cart'));
@@ -46,7 +48,14 @@ export default function ShopProductCard() {
 
   async function handleCheckout() {
     await axiosHelper('post', '/customer/order/confirm', { cart: products }).then(res => {
-      console.log(res);
+      if (res.data.success) {
+        setProducts([]);
+        setCart(0);
+        localStorage.setItem('cart', JSON.stringify([]));
+        toast.success('Order success');
+        return navigate('/');
+      }
+      toast.error('Order failed');
     });
   }
 
@@ -90,12 +99,7 @@ export default function ShopProductCard() {
               <div className="flex items-center w-full">
                 <div className="flex items-center w-full">
                   <Typography className="text-white w-[90%]" variant="body2">
-                    Total:{' '}
-                    {fCurrency(
-                      products.reduce((acc, product) => {
-                        return acc + product.price * product.amount;
-                      }, 0),
-                    )}
+                    Total: {fCurrency(products.reduce((acc, cur) => acc + cur.price * cur.amount, 0))}
                   </Typography>
                   <button
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
@@ -159,7 +163,7 @@ function TableRow({ product, products, setProducts }) {
         </div>
       </td>
       <td className="p-2 whitespace-nowrap">
-        <div className="text-left font-medium text-blue-500">{fCurrency(product.price)}</div>
+        <div className="text-left font-medium text-blue-500">{fCurrency(product.price * product.amount)}</div>
       </td>
       <td className="p-2 whitespace-nowrap">
         <button
