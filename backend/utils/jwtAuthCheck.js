@@ -6,7 +6,7 @@ async function authCheck(req) {
   if (token == null) {
     return {
       success: false,
-      message: 'No token provided',
+      message: 'Please login to access this',
     };
   }
 
@@ -20,7 +20,7 @@ async function authCheck(req) {
     console.log(err);
     return {
       success: false,
-      message: 'Token invalid',
+      message: 'Please login again',
     };
   }
 }

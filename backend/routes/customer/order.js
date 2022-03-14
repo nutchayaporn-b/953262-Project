@@ -126,6 +126,22 @@ router.post('/checkout', async (req, res) => {
       });
     }
 
+    await orders.map(async order => {
+      const orderItems = await prisma.order_item.findMany({
+        where: {
+          order_id: order.id,
+          order_status_id: 1, // served
+        },
+      });
+
+      if (orderItems.length !== 0) {
+        return res.status(200).json({
+          success: false,
+          message: 'All orders must be served before checkout',
+        });
+      }
+    });
+
     const invoice = await prisma.invoice.create({
       data: {
         invoice_status_id: 1, // waiting for payment
