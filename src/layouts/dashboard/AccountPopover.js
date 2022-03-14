@@ -112,6 +112,7 @@ export default function AccountPopover() {
               variant="outlined"
               onClick={() => {
                 logout();
+                navigate('/');
               }}
             >
               Logout

@@ -12,11 +12,14 @@ import { fDateTime } from '../utils/formatTime';
 import Iconify from '../components/Iconify';
 import axiosHelper from '../utils/axios';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  if (user.role === 'kitchen') navigate('/kitchen/order');
   useEffect(() => {
     axiosHelper('get', '/customer/order/list').then(res => {
       if (res.data.success) {
