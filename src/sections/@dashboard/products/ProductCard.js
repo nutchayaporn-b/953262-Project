@@ -108,13 +108,12 @@ function PopUp({ open, setOpen, product }) {
   function addToCart(product) {
     // Save product to the cart in the localStorage
     const cart = JSON.parse(localStorage.getItem('cart'));
-    if (!cart) {
-      localStorage.setItem('cart', JSON.stringify([product]));
-    } else {
+    if (cart) {
       cart.push(product);
       localStorage.setItem('cart', JSON.stringify(cart));
-      setCart(cart.length);
     }
+    const productAmount = cart.reduce((acc, cur) => acc + (cur.amount || 1), 0);
+    setCart(productAmount);
     setOpen(false);
   }
 

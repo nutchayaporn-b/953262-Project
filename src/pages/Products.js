@@ -41,11 +41,14 @@ export default function EcommerceShop() {
     resetForm();
   };
 
-  const [cart, setCart] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')).length : 0);
+  const [cart, setCart] = useState(0);
   const providerValue = useMemo(() => ({ cart, setCart }), [cart, setCart]);
 
-  useEffect(() => {
-    axiosHelper('get', '/customer/order/menu').then(res => {
+  useEffect(async () => {
+    const cart = JSON.parse(localStorage.getItem('cart'));
+    const productAmount = cart.reduce((acc, cur) => acc + (cur.amount || 1), 0);
+    setCart(productAmount);
+    await axiosHelper('get', '/customer/order/menu').then(res => {
       setProducts(res.data.data);
     });
   }, []);

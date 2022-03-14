@@ -27,6 +27,7 @@ import ColorManyPicker from '../../../components/ColorManyPicker';
 import { ProductContext } from '../../../context/ProductContext';
 import Searchbar from '../../../layouts/dashboard/Searchbar';
 import axiosHelper from '../../../utils/axios';
+import OrderProductCard from './OrderProductCard';
 
 export const FILTER_GENDER_OPTIONS = ['Men', 'Women', 'Kids'];
 export const FILTER_CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
@@ -60,21 +61,23 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
     axiosHelper('get', '/customer/order/category').then(res => {
       setCategories(res.data.data);
     });
-  });
+  }, []);
 
   const [categories, setCategories] = useState(null);
 
   const { values, getFieldProps, handleChange } = formik;
   const { cart } = useContext(ProductContext);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
+      <OrderListPopUp isOpen={isOpen} setIsOpen={setIsOpen} />
       <Button
         disableRipple
         color="inherit"
         onClick={() => {
-          navigate('/dashboard');
+          setIsOpen(true);
         }}
       >
         Order List &nbsp; <div className="bg-green-500 text-white rounded-[50%] px-3 py-1">{cart}</div>
@@ -138,41 +141,6 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
                     ))}
                   </RadioGroup>
                 </div>
-
-                {/* <div>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Rating
-                  </Typography>
-                  <RadioGroup {...getFieldProps('rating')}>
-                    {FILTER_RATING_OPTIONS.map((item, index) => (
-                      <FormControlLabel
-                        key={item}
-                        value={item}
-                        control={
-                          <Radio
-                            disableRipple
-                            color="default"
-                            icon={<Rating readOnly value={4 - index} />}
-                            checkedIcon={<Rating readOnly value={4 - index} />}
-                          />
-                        }
-                        label=""
-                        sx={{
-                          my: 0.5,
-                          borderRadius: 1,
-                          '& > :first-of-type': { py: 0.5 },
-                          '&:hover': {
-                            opacity: 0.48,
-                            '& > *': { bgcolor: 'transparent' },
-                          },
-                          ...(values.rating.includes(item) && {
-                            bgcolor: 'background.neutral',
-                          }),
-                        }}
-                      />
-                    ))}
-                  </RadioGroup>
-                </div> */}
               </Stack>
             </Scrollbar>
 
@@ -193,5 +161,45 @@ export default function ShopFilterSidebar({ isOpenFilter, onResetFilter, onOpenF
         </Form>
       </FormikProvider>
     </>
+  );
+}
+
+function OrderListPopUp({ isOpen, setIsOpen }) {
+  return (
+    <Transition.Root show={isOpen} as={Fragment}>
+      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setIsOpen}>
+        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+
+          {/* This element is to trick the browser into centering the modal contents. */}
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+            &#8203;
+          </span>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          >
+            <div className="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+              <OrderProductCard />
+            </div>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition.Root>
   );
 }

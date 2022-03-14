@@ -35,7 +35,7 @@ CREATE TABLE `invoice` (
 
 -- CreateTable
 CREATE TABLE `invoice_status` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `status` VARCHAR(45) NULL,
 
     PRIMARY KEY (`id`)

@@ -41,7 +41,7 @@ model invoice {
 }
 
 model invoice_status {
-  id      Int       @id
+  id      Int       @id @default(autoincrement())
   status  String?   @db.VarChar(45)
   invoice invoice[]
 }
