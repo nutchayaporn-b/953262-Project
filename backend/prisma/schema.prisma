@@ -31,13 +31,13 @@ model food {
 model invoice {
   id                Int             @id @default(autoincrement())
   total             Float?
-  order_id          Int?
   invoice_status_id Int?
   invoice_status    invoice_status? @relation(fields: [invoice_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_invoice_status1")
-  order             order?          @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invoice_order1")
-
+  created_at        DateTime?
+  updated_at        DateTime?
+  order            order[]
   @@index([invoice_status_id], map: "fk_invoice_invoice_status1_idx")
-  @@index([order_id], map: "fk_invoice_order1_idx")
+
 }
 
 model invoice_status {
@@ -49,13 +49,16 @@ model invoice_status {
 model order {
   id         Int          @id @default(autoincrement())
   user_id    Int?
+  invoice_id Int?
+  checkout   Int?         @default(0)
   created_at DateTime?    @db.DateTime(0)
   updated_at DateTime?    @db.DateTime(0)
   user       user?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_user1")
-  invoice    invoice[]
+  invoice    invoice?     @relation(fields: [invoice_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_invoice1")
   order_item order_item[]
 
   @@index([user_id], map: "fk_order_user1_idx")
+  @@index([invoice_id], map: "fk_order_invoice1_idx")
 }
 
 model order_item {
