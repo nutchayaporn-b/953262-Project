@@ -1,94 +1,116 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axiosHelper from '../utils/axios';
+import { toast } from 'react-hot-toast';
+import { fCurrency } from '../utils/formatNumber';
 
 export default function Invoice() {
+  useEffect(async () => {
+    await axiosHelper('get', '/customer/order/invoice').then(res => {
+      if (res.data.success) {
+        setInvoice(res.data.data.invoice);
+        const orders = res.data.data.orders;
+        const temp = [];
+        orders.forEach(order => {
+          order.order_item.forEach(item => {
+            // temp push item to array if item.food.id not exist in array
+            if (!temp.some(e => e.food.id === item.food.id)) {
+              temp.push({
+                food: item.food,
+                amount: item.amount,
+                price: item.food.price,
+              });
+            } else {
+              // if item.food.id exist in array, update amount
+              const index = temp.findIndex(e => e.food.id === item.food.id);
+              temp[index].amount += item.amount;
+            }
+          });
+        });
+        setOrder(temp);
+      } else {
+        toast.error('No invoice found');
+      }
+    });
+  }, []);
+
+  const [invoice, setInvoice] = useState();
+  const [order, setOrder] = useState();
+  if (!invoice) return <div></div>;
   return (
     <div className="mx-auto p-16 max-w-[800px]">
       <div className="flex items-center justify-between mb-8 px-3">
         <div>
-          <span className="text-2xl">Example Invoice #</span>: 0001-2019
+          <span className="text-2xl">Invoice: {invoice.id}</span>
           <br />
-          <span>Date</span>: January 1st 2019
+          <span>Date</span>: {new Date(invoice.updated_at || new Date()).toLocaleTimeString()}{' '}
+          {new Date(invoice.updated_at || new Date()).toLocaleDateString()}
           <br />
         </div>
         <div className="text-right">
-          <img src="https://www.stenvdb.be/assets/img/email-signature.png" alt="" />
+          <img src="/static/logo.png" width={150} height={150} alt="" />
         </div>
       </div>
 
       <div className="flex justify-between mb-8 px-3">
         <div>
-          Pixel &amp; Tonic
+          Best ChiangMai Restaurant
           <br />
-          919 NW Bond St. Ste 203
+          12/1 NB Building Nimmanhemin
           <br />
-          Bend, OR 97703 USA
+          Suthep A. Muang Chiang Mai 50200
           <br />
-          hello@pixelandtonic.com
+          best@chiangmai.com
           <br />
-          +1 855-700-5115
+          +66 55-700-5115
         </div>
         <div className="text-right">
-          Company Name
+          Chiang Mai University
           <br />
           Street 12
           <br />
           10000 City
           <br />
-          hello@yoursite.com
+          @Chiangmai
         </div>
       </div>
 
       <div className="border border-t-2 border-gray-200 mb-8 px-3"></div>
 
       <div className="mb-8 px-3">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus aliquam vestibulum elit, id rutrum sem
-          lobortis eget. In a massa et leo vehicula dapibus. In convallis ut nisi ut vestibulum. Integer non feugiat
-          tellus. Nullam id ex suscipit, volutpat sapien tristique, porttitor sapien.
-        </p>
+        <p>Thanks for your order. Please find your order details below.</p>
       </div>
 
-      <div className="flex justify-between mb-4 bg-gray-200 px-3 py-2">
-        <div>Development</div>
-        <div className="text-right font-medium">1200 EUR</div>
-      </div>
-      <div className="flex justify-between mb-4 bg-gray-200 px-3 py-2">
-        <div>Design</div>
-        <div className="text-right font-medium">800 EUR</div>
-      </div>
-      <div className="flex justify-between mb-4 bg-gray-200 px-3 py-2">
-        <div>Licensing</div>
-        <div className="text-right font-medium">300 EUR</div>
-      </div>
+      {order &&
+        order.map(product => (
+          <div className="grid grid-cols-3 mb-4 bg-gray-200 px-3 py-2">
+            <div className="font-medium text-left">{product.food.name}</div>
+            <div className="font-medium text-center">{product.amount} pcs.</div>
+            <div className="font-medium text-right">{fCurrency(product.food.price * product.amount)}</div>
+          </div>
+        ))}
 
       <div className="flex justify-between items-center mb-2 px-3">
         <div className="text-2xl leading-none">
           <span className="">Total</span>:
         </div>
-        <div className="text-2xl text-right font-medium">2300 EUR</div>
+        <div className="text-2xl text-right font-medium">{fCurrency(invoice.total)}</div>
       </div>
 
       <div className="flex mb-8 justify-end px-3">
         <div className="text-right w-1/2 px-0 leading-tight">
           <small className="text-xs">
-            Nullam auctor, tellus sit amet eleifend interdum, quam nisl luctus quam, a tincidunt nisi eros ac dui.
-            Curabitur leo ipsum, bibendum sit amet suscipit sed, gravida non lectus. Nunc porttitor lacus sapien, nec
-            congue quam cursus nec. Quisque vel vehicula ipsum. Donec condimentum dolor est, ut interdum augue blandit
-            luctus.{' '}
+            Best Regards,
+            <br />
+            Best ChiangMai Restaurant
           </small>
         </div>
       </div>
 
-      <div className="mb-8 px-3">
-        <span>To be paid before</span> Februari 1st 2019 on <b className="underline font-bold">BE71 0961 2345 6769</b>{' '}
-        specifying the invoice #
-      </div>
+      <div className="mb-8 px-3"></div>
 
       <div className="mb-8 text-4xl text-center px-3">
         <span>Thank you!</span>
       </div>
-
-      <div className="text-center text-sm px-3">hello@yourdomain.com ∖ www.yourdomain.com</div>
     </div>
   );
 }
