@@ -55,7 +55,7 @@ export default function ShopProductCard() {
         toast.success('Order success');
         return navigate('/');
       }
-      toast.error('Order failed');
+      toast.error(res.data.message);
     });
   }
 

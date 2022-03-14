@@ -72,11 +72,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         ]
       : [
           {
-            title: 'dashboard',
-            path: '/dashboard',
-            icon: getIcon('eva:pie-chart-2-fill'),
-          },
-          {
             title: 'Order Management',
             path: '/kitchen/order',
             icon: getIcon('ep:dish'),
